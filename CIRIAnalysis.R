@@ -24,8 +24,9 @@ library(vcd)
 library(corrgram)
 
 # Importing the CIRI dataset
-ciri <- read.csv("https://dl.dropbox.com/s/qeohpbfrrvm4pcp/CIRI_raw_data.csv")
+ciri <- read.csv("CIRI_raw_data.csv")
 
+#### Data Cleaning #####
 #Remove useless columns
 ciri <- ciri[, c(1:2, 9:ncol(ciri))]
 
@@ -40,25 +41,16 @@ ciri <- ciri[complete.cases(ciri),]
 #Write cleaned data to CSV
 # write.csv(ciri, file="truncData.csv");
 
+#### Visualizing Correlations ####
 #See correlations
 dataC <- ciri[,3:(dim(ciri)[2])]
 corr <- cor(dataC)
 corrplot(corr, method="pie")
 
-# mosaicplot(ciri$KILL ~ ciri$TORT, 
-#            main="Passenger Fate by Traveling Class", shade=FALSE, 
-#            color=TRUE, xlab="Pclass", ylab="Survived")
-# 
-# corrgram.data <- ciri
-# ## change features of factor type to numeric type for inclusion on correlogram
-# corrgram.data$KILL <- as.numeric(corrgram.data$KILL)
-# corrgram.data$TORT <- as.numeric(corrgram.data$TORT)
-# corrgram.data$DISAP <- as.numeric(corrgram.data$DISAP)
-# corrgram.data$ASSN <- as.numeric(corrgram.data$ASSN)
-# corrgram.data$SPEECH <- as.numeric(corrgram.data$SPEECH)
-# corrgram.data$SPEECH <- as.numeric(corrgram.data$INJUD)
-# ## generate correlogram
-# corrgram.vars <- c("KILL", "TORT", "DISAP", "ASSN", "SPEECH", "INJUD")
-# corrgram(corrgram.data[,corrgram.vars], order=FALSE, 
-#          lower.panel=panel.ellipse, upper.panel=panel.pie, 
-#          text.panel=panel.txt, main="Titanic Training Data")
+# Importing the U.S. Overseas Loans and Grants
+usgrants <- read.csv("Total_Economic_and_Military_Assistance_1946-2014.csv")
+
+usgrants0414 <- usgrants[usgrants$Fiscal.Year >= 2004, ] 
+
+
+
