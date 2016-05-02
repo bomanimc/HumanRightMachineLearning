@@ -54,7 +54,8 @@ usgrants <- read.csv("Total_Economic_and_Military_Assistance_1946-2014.csv")
 #### Data Cleaning for Grants ####
 usgrants$Obligations..Constant.Dollars. <- as.numeric(gsub(",","",as.character(usgrants$Obligations..Constant.Dollars.)))
 usgrants0414 <- usgrants[usgrants$Fiscal.Year >= 2004, ] 
-usgrantsSum0414 <- aggregate(Obligations..Constant.Dollars. ~ Country, usgrants0414, sum)
+military0414 <- usgrants0414[usgrants0414$Assistance.Category == "Military",]
+militarySum0414 <- aggregate(Obligations..Constant.Dollars. ~ Country, usgrants0414, sum)
 
 #Get the Countries that don't match between the datasets
 setDiff <- unique(ciri$CTRY)[!unique(ciri$CTRY) %in% usgrantsSum0414$CTRY]
