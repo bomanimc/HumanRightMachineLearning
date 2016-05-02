@@ -22,11 +22,12 @@
 library(corrplot)
 library(vcd)
 library(corrgram)
+library(reshape)
 
 # Importing the CIRI dataset
 ciri <- read.csv("CIRI_raw_data.csv")
 
-#### Data Cleaning #####
+#### Data Cleaning for CIRI #####
 #Remove useless columns
 ciri <- ciri[, c(1:2, 9:ncol(ciri))]
 
@@ -47,10 +48,14 @@ dataC <- ciri[,3:(dim(ciri)[2])]
 corr <- cor(dataC)
 corrplot(corr, method="pie")
 
-# Importing the U.S. Overseas Loans and Grants
+# Importing the U.S. Overseas Loans and Grants dataset
 usgrants <- read.csv("Total_Economic_and_Military_Assistance_1946-2014.csv")
 
+#### Data Cleaning for Grants ####
+usgrants$Obligations..Constant.Dollars. <- as.numeric(gsub(",","",as.character(usgrants$Obligations..Constant.Dollars.)))
 usgrants0414 <- usgrants[usgrants$Fiscal.Year >= 2004, ] 
+usgrantsSum0414 <- aggregate(Obligations..Constant.Dollars. ~ Country, usgrants0414, sum)
 
-
+#Get the Countries that don't match between the datasets
+setDiff <- unique(ciri$CTRY)[!unique(ciri$CTRY) %in% usgrantsSum0414$CTRY]
 
