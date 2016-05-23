@@ -24,6 +24,7 @@ library(vcd)
 library(corrgram)
 library(reshape)
 library(ggplot2)
+library('scales')
 setwd('Desktop/humanrights')
 
 # Importing the CIRI dataset
@@ -115,4 +116,14 @@ allAggregate <- merge(allAggregate, sortedSubset, by = intersect(names(allAggreg
 
 #Sort the aggregated data
 sortedAggregate <- allAggregate[order(-allAggregate$Obligations..Constant.Dollars.),]
+
+#Bring in data on US exports:
+exports <- read.csv("TIV-Export-USA-2004-2014.csv")
+names(exports)[names(exports)=="X"] <- "Country"
+sortedExports <- exports[order(-exports$Total),]
+
+#Join Total US Exports to the country into the aggregated data
+allAggregate <- merge(allAggregate, exports[,c("Country","Total")], by = intersect(names(allAggregate), names(exports)))
+allAggregate$Total <- dollar_format()(allAggregate$Total*1000000)
+allAggregate$Obligations..Constant.Dollars. <- dollar_format()(allAggregate$Obligations..Constant.Dollars.)
 
