@@ -93,21 +93,26 @@ sortedSubset = sortedMilitary[1:n,]
 # }
 # ggplot(data = ciriSet, aes(x=ciriSet$YEAR, y=ciriSet$PHYSINT)) + geom_line(aes(colour=ciriSet$CTRY))
 
-#Plot the Summative Index
-# # This generally shows that there isn't much relation
-# # between human rights and funding
-# ciriSet = NULL
-# for(country in sortedSubset$Country) {
-#   ciriPRI = ciri[ciri$CTRY == country,]
-#   ciriSet = rbind(ciriSet, ciriPRI)
-# }
-# ggplot(data = ciriSet, aes(x=ciriSet$YEAR, y=50*((ciriSet$PHYSINT/8)+(ciriSet$NEW_EMPINX/14)))) + geom_line(aes(colour=ciriSet$CTRY))
+# Plot the Summative Index
+# This generally shows that there isn't much relation
+# between human rights and funding
+ciriSet = NULL
+for(country in sortedSubset$Country) {
+  ciriPRI = ciri[ciri$CTRY == country,]
+  ciriSet = rbind(ciriSet, ciriPRI)
+}
+ggplot(data = ciriSet, aes(x=ciriSet$YEAR, y=50*((ciriSet$PHYSINT/8)+(ciriSet$NEW_EMPINX/14)))) + geom_line(aes(colour=ciriSet$CTRY))
 
 #Add new human rights score to the dataset
 ciriSet$Summary <- 50*((ciriSet$PHYSINT/8)+(ciriSet$NEW_EMPINX/14))
 
-#Aggregate data
+#Aggregate data with Human Rights Scores and Money
 allAggregate <- aggregate(ciriSet$Summary, list(Country=ciriSet$CTRY), FUN=median)
-names(allAggregate)[names(allAggregate)=="x"] <- "Median"
+names(allAggregate)[names(allAggregate)=="x"] <- "Median.Human.Rights.Summary"
 sds <- aggregate(ciriSet$Summary, list(Country=ciriSet$CTRY), FUN=sd)
 allAggregate$SD <- sds$x
+allAggregate <- merge(allAggregate, sortedSubset, by = intersect(names(allAggregate), names(sortedSubset)))
+
+#Sort the aggregated data
+sortedAggregate <- allAggregate[order(-allAggregate$Obligations..Constant.Dollars.),]
+
