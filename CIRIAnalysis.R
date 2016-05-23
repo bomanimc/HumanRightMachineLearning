@@ -23,6 +23,7 @@ library(corrplot)
 library(vcd)
 library(corrgram)
 library(reshape)
+setwd('Desktop/humanrights')
 
 # Importing the CIRI dataset
 ciri <- read.csv("CIRI_raw_data.csv")
@@ -51,12 +52,29 @@ corrplot(corr, method="pie")
 # Importing the U.S. Overseas Loans and Grants dataset
 usgrants <- read.csv("Total_Economic_and_Military_Assistance_1946-2014.csv")
 
-#### Data Cleaning for Grants ####
+#### Data Cleaning for Military Grants ####
 usgrants$Obligations..Constant.Dollars. <- as.numeric(gsub(",","",as.character(usgrants$Obligations..Constant.Dollars.)))
+
+#Start Fixing Issues w/ Naming
+levels(usgrants$Country)[levels(usgrants$Country) == "Burma (Myanmar)"] <- "Burma"
+levels(usgrants$Country)[levels(usgrants$Country) == "Micronesia (Federated States of)"] <- "Micronesia, Federated States of"
+levels(usgrants$Country)[levels(usgrants$Country) == "Bahamas, The"] <- "Bahamas"
+levels(usgrants$Country)[levels(usgrants$Country) == "Korea, Republic of"] <- "Korea, South"
+levels(usgrants$Country)[levels(usgrants$Country) == "Serbia"] <- "Serbia and Montenegro"
+levels(usgrants$Country)[levels(usgrants$Country) == "Trinidad & Tobago"] <- "Trinidad and Tobago"
+levels(usgrants$Country)[levels(usgrants$Country) == "Macedonia, Former Yugoslav Republic"] <- "Macedonia"
+levels(usgrants$Country)[levels(usgrants$Country) == "St. Vincent and Grenadines"] <- "Saint Vincent and the Grenadines"
+levels(usgrants$Country)[levels(usgrants$Country) == "St. Vincent and Grenadines"] <- "Saint Vincent and the Grenadines"
+#Merge the Chinas and Congos
+
+#Subset to 2004
 usgrants0414 <- usgrants[usgrants$Fiscal.Year >= 2004, ] 
 military0414 <- usgrants0414[usgrants0414$Assistance.Category == "Military",]
-militarySum0414 <- aggregate(Obligations..Constant.Dollars. ~ Country, usgrants0414, sum)
+militarySum0414 <- aggregate(Obligations..Constant.Dollars. ~ Country, military0414, sum)
 
 #Get the Countries that don't match between the datasets
-setDiff <- unique(ciri$CTRY)[!unique(ciri$CTRY) %in% usgrantsSum0414$CTRY]
+setDiff <- unique(ciri$CTRY)[!unique(ciri$CTRY) %in% unique(militarySum0414$Country)]
+
+
+
 
