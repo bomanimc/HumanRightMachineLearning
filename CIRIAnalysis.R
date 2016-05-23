@@ -23,6 +23,7 @@ library(corrplot)
 library(vcd)
 library(corrgram)
 library(reshape)
+library(ggplot2)
 setwd('Desktop/humanrights')
 
 # Importing the CIRI dataset
@@ -75,6 +76,20 @@ militarySum0414 <- aggregate(Obligations..Constant.Dollars. ~ Country, military0
 #Get the Countries that don't match between the datasets
 setDiff <- unique(ciri$CTRY)[!unique(ciri$CTRY) %in% unique(militarySum0414$Country)]
 
+#Sort the military spending data
+sortedMilitary <- militarySum0414[order(-militarySum0414$Obligations..Constant.Dollars.),]
 
+#Take the top n rows
+n = 5
+sortedSubset = sortedMilitary[1:n,]
 
+#Plot the Physical Rights Index]
+## This ended up not being very helpful since it's
+## hard to see what is going in the graph
+# ciriSet = NULL
+# for(country in sortedSubset$Country) {
+#   ciriPRI = ciri[ciri$CTRY == country,]
+#   ciriSet = rbind(ciriSet, ciriPRI)
+# }
+# ggplot(data = ciriSet, aes(x=ciriSet$YEAR, y=ciriSet$PHYSINT)) + geom_line(aes(colour=ciriSet$CTRY))
 
